@@ -1,0 +1,35 @@
+CREATE TABLE TripEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    start_port_id TEXT NOT NULL,
+    start_port_name TEXT NOT NULL,
+    start_port_country TEXT NOT NULL,
+    start_port_lat REAL NOT NULL,
+    start_port_lng REAL NOT NULL,
+    end_port_id TEXT,
+    end_port_name TEXT,
+    end_port_country TEXT,
+    end_port_lat REAL,
+    end_port_lng REAL,
+    start_date INTEGER NOT NULL,
+    end_date INTEGER,
+    status TEXT NOT NULL DEFAULT 'PLANNED',
+    cover_image_url TEXT,
+    created_by TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM TripEntity ORDER BY start_date DESC;
+
+selectById:
+SELECT * FROM TripEntity WHERE id = :id;
+
+insert:
+INSERT OR REPLACE INTO TripEntity VALUES ?;
+
+updateStatus:
+UPDATE TripEntity SET status = :status WHERE id = :id;
+
+deleteById:
+DELETE FROM TripEntity WHERE id = :id;

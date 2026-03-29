@@ -1,0 +1,47 @@
+CREATE TABLE ExpenseEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    amount REAL NOT NULL,
+    currency TEXT NOT NULL,
+    category TEXT NOT NULL,
+    paid_by TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    notes TEXT,
+    receipt_image_url TEXT,
+    created_at INTEGER NOT NULL
+);
+
+CREATE TABLE ExpenseSplitEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    expense_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    user_name TEXT NOT NULL,
+    amount REAL NOT NULL,
+    is_paid INTEGER NOT NULL DEFAULT 0,
+    paid_at INTEGER,
+    FOREIGN KEY (expense_id) REFERENCES ExpenseEntity(id) ON DELETE CASCADE
+);
+
+selectByTripId:
+SELECT * FROM ExpenseEntity WHERE trip_id = :tripId ORDER BY date DESC;
+
+selectById:
+SELECT * FROM ExpenseEntity WHERE id = :id;
+
+insertExpense:
+INSERT OR REPLACE INTO ExpenseEntity VALUES ?;
+
+deleteExpense:
+DELETE FROM ExpenseEntity WHERE id = :id;
+
+selectSplitsByExpenseId:
+SELECT * FROM ExpenseSplitEntity WHERE expense_id = :expenseId;
+
+insertSplit:
+INSERT OR REPLACE INTO ExpenseSplitEntity VALUES ?;
+
+markSplitPaid:
+UPDATE ExpenseSplitEntity
+SET is_paid = 1, paid_at = :paidAt
+WHERE expense_id = :expenseId AND user_id = :userId;
