@@ -1,0 +1,50 @@
+CREATE TABLE ShoppingListEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    created_by TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+);
+
+CREATE TABLE ShoppingItemEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    list_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    quantity REAL NOT NULL,
+    unit TEXT NOT NULL,
+    estimated_price REAL,
+    actual_price REAL,
+    currency TEXT NOT NULL DEFAULT 'PLN',
+    is_purchased INTEGER NOT NULL DEFAULT 0,
+    purchased_by TEXT,
+    purchased_at INTEGER,
+    notes TEXT,
+    FOREIGN KEY (list_id) REFERENCES ShoppingListEntity(id) ON DELETE CASCADE
+);
+
+selectListsByTripId:
+SELECT * FROM ShoppingListEntity WHERE trip_id = :tripId ORDER BY created_at DESC;
+
+selectListById:
+SELECT * FROM ShoppingListEntity WHERE id = :id;
+
+insertList:
+INSERT OR REPLACE INTO ShoppingListEntity VALUES ?;
+
+deleteList:
+DELETE FROM ShoppingListEntity WHERE id = :id;
+
+selectItemsByListId:
+SELECT * FROM ShoppingItemEntity WHERE list_id = :listId ORDER BY is_purchased ASC, name ASC;
+
+insertItem:
+INSERT OR REPLACE INTO ShoppingItemEntity VALUES ?;
+
+updateItemPurchased:
+UPDATE ShoppingItemEntity
+SET is_purchased = :isPurchased, purchased_by = :purchasedBy, purchased_at = :purchasedAt
+WHERE id = :id;
+
+deleteItem:
+DELETE FROM ShoppingItemEntity WHERE id = :id;

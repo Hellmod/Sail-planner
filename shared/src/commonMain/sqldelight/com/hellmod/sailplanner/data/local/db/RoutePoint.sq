@@ -1,0 +1,24 @@
+CREATE TABLE RoutePointEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    trip_id TEXT NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    altitude REAL,
+    accuracy REAL,
+    timestamp INTEGER NOT NULL,
+    speed REAL,
+    heading REAL,
+    FOREIGN KEY (trip_id) REFERENCES TripEntity(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_route_trip_id ON RoutePointEntity(trip_id);
+CREATE INDEX idx_route_timestamp ON RoutePointEntity(timestamp);
+
+selectByTripId:
+SELECT * FROM RoutePointEntity WHERE trip_id = :tripId ORDER BY timestamp ASC;
+
+insert:
+INSERT OR REPLACE INTO RoutePointEntity VALUES ?;
+
+deleteByTripId:
+DELETE FROM RoutePointEntity WHERE trip_id = :tripId;
